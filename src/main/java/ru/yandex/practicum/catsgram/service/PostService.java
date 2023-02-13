@@ -15,14 +15,17 @@ import static ru.yandex.practicum.catsgram.Constants.DESCENDING_ORDER;
 
 @Service
 public class PostService {
+    private static Integer globalId = 0;
     private final UserService userService;
     private final List<Post> posts = new ArrayList<>();
-
-    private static Integer globalId = 0;
 
     @Autowired
     public PostService(UserService userService) {
         this.userService = userService;
+    }
+
+    private static Integer getNextId() {
+        return globalId++;
     }
 
     public Post create(Post post) {
@@ -59,10 +62,6 @@ public class PostService {
                 .sorted((p0, p1) -> compare(p0, p1, sort))
                 .limit(size)
                 .collect(Collectors.toList());
-    }
-
-    private static Integer getNextId() {
-        return globalId++;
     }
 
     private int compare(Post p0, Post p1, String sort) {

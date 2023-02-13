@@ -4,9 +4,9 @@ import java.time.Instant;
 
 public class Post {
 
-    private Integer id;
     private final String author; // автор
     private final Instant creationDate = Instant.now(); // дата создания
+    private Integer id;
     private String description; // описание
     private String photoUrl; // url-адрес фотографии
 
