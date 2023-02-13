@@ -1,7 +1,6 @@
 package ru.yandex.practicum.catsgram.service;
 
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 import ru.yandex.practicum.catsgram.exception.InvalidEmailException;
 import ru.yandex.practicum.catsgram.exception.UserAlreadyExistException;
 import ru.yandex.practicum.catsgram.model.User;
@@ -18,32 +17,35 @@ public class UserService {
         return users.values();
     }
 
-    public User create( User user) {
-        if(user.getEmail() == null || user.getEmail().isBlank()) {
-            throw new InvalidEmailException("Адрес электронной почты не может быть пустым.");
-        }
-        if(users.containsKey(user.getEmail())) {
-            throw new UserAlreadyExistException("Пользователь с электронной почтой " +
-                    user.getEmail() + " уже зарегистрирован.");
-        }
-        users.put(user.getEmail(), user);
-        return user;
-    }
-
-    public User put( User user) {
-        if(user.getEmail() == null || user.getEmail().isBlank()) {
-            throw new InvalidEmailException("Адрес электронной почты не может быть пустым.");
+    public User createUser(User user) {
+        checkEmail(user);
+        if (users.containsKey(user.getEmail())) {
+            throw new UserAlreadyExistException(String.format(
+                    "Пользователь с электронной почтой %s уже зарегистрирован.",
+                    user.getEmail()
+            ));
         }
         users.put(user.getEmail(), user);
         return user;
     }
 
-    public User findUserByEmail(String email){
-        for (User user :users.values()) {
-            if (user.getEmail().equals(email)){
-                return user;
-            }
+    public User updateUser(User user) {
+        checkEmail(user);
+        users.put(user.getEmail(), user);
+
+        return user;
+    }
+
+    public User findUserByEmail(String email) {
+        if (email == null) {
+            return null;
         }
-        return null;
+        return users.get(email);
+    }
+
+    private void checkEmail(User user) {
+        if (user.getEmail() == null || user.getEmail().isBlank()) {
+            throw new InvalidEmailException("Адрес электронной почты не может быть пустым.");
+        }
     }
 }
